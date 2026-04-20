@@ -787,7 +787,7 @@ const exportAsPDF = async () => {
 }
 
 // 截取地图图片
-const captureMapImage = async () => {
+/* eslint-disable-next-line no-unused-vars */const captureMapImage = async () => {
   if (!map) return
 
   try {
@@ -816,7 +816,7 @@ const captureMapImage = async () => {
 }
 
 // 恢复地图
-const restoreMap = () => {
+/* eslint-disable-next-line no-unused-vars */const restoreMap = () => {
   const mapContainer = document.getElementById('amap-container')
   const snapshot = document.getElementById('map-snapshot')
 
@@ -833,7 +833,7 @@ const restoreMap = () => {
 const initMap = async () => {
   try {
     const AMap = await AMapLoader.load({
-      key: import.meta.env.VITE_AMAP_WEB_JS_KEY,  // 高德地图Web端(JS API) Key
+      key: (import.meta as any).env?.VITE_AMAP_WEB_JS_KEY,  // 高德地图Web端(JS API) Key
       version: '2.0',
       plugins: ['AMap.Marker', 'AMap.Polyline', 'AMap.InfoWindow']
     })

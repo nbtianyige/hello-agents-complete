@@ -1,11 +1,12 @@
 import axios from 'axios'
 import type { TripFormData, TripPlanResponse } from '@/types'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
+// 修复 Vite 环境变量的 TS 类型
+const API_BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || 'http://localhost:8000'
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 120000, // 2分钟超时
+  timeout: 120000, // 2 分钟超时
   headers: {
     'Content-Type': 'application/json'
   }
@@ -62,4 +63,3 @@ export async function healthCheck(): Promise<any> {
 }
 
 export default apiClient
-
