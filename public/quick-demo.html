@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HelloAgents 旅行助手 - 快速预览</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #667eea; margin-bottom: 10px; }
+        p { color: #666; line-height: 1.6; margin-bottom: 20px; }
+        .btn-group { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 30px; }
+        .btn {
+            padding: 15px 30px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            transition: transform 0.2s;
+            cursor: pointer;
+            border: none;
+        }
+        .btn:hover { transform: scale(1.05); }
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .btn-secondary { background: #52c41a; }
+        .btn-outline { border: 2px solid #667eea; color: #667eea; background: transparent; }
+        .status {
+            background: #f0f9ff;
+            border: 1px solid #91caff;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #0958d9;
+        }
+        .emoji { font-size: 3em; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="card">
+            <div class="emoji">🌍✈️</div>
+            <h1>HelloAgents 智能旅行助手</h1>
+            <p>一个真正可用的全栈 AI 旅行规划应用</p>
+            
+            <div class="status">
+                <strong>✅ 完整项目代码已就绪</strong><br>
+                包含前端 + 后端 + API 集成，按照 DEPLOYMENT.md 部署即可使用
+            </div>
+
+            <div class="btn-group">
+                <a href="https://github.com/nbtianyige/hello-agents-complete" target="_blank" class="btn btn-primary">
+                    📦 查看源代码
+                </a>
+                <a href="./" target="_blank" class="btn btn-secondary">
+                    🚀 访问在线演示
+                </a>
+                <button onclick="showInfo()" class="btn btn-outline">ℹ️ 了解更多信息</button>
+            </div>
+
+            <div v-show="showMoreInfo" class="status" style="margin-top: 20px;">
+                <h3>📋 快速开始</h3>
+                <ol style="text-align: left; margin-top: 10px; padding-left: 20px;">
+                    <li>安装 Python 3.10+ 和 Node.js 16+</li>
+                    <li>克隆仓库：git clone https://github.com/nbtianyige/hello-agents-complete.git</li>
+                    <li>配置 API Keys (DeepSeek/OpenAI + 高德地图)</li>
+                    <li>启动后端：cd backend && uvicorn app.api.main:app --reload</li>
+                    <li>启动前端：cd frontend && npm run dev</li>
+                    <li>打开 http://localhost:5173 开始使用！</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var showMoreInfo = false;
+        
+        function showInfo() {
+            showMoreInfo = !showMoreInfo;
+            document.getElementById('more-info').style.display = showMoreInfo ? 'block' : 'none';
+        }
+    </script>
+    <div id="more-info" style="display:none;"></div>
+    <script>
+        document.getElementById('more-info').outerHTML = '<div class="status" style="margin-top: 20px;"><h3>📋 快速开始</h3><ol style="text-align: left; margin-top: 10px; padding-left: 20px;"><li>安装 Python 3.10+ 和 Node.js 16+</li><li>克隆仓库：git clone https://github.com/nbtianyige/hello-agents-complete.git</li><li>配置 API Keys (DeepSeek/OpenAI + 高德地图)</li><li>启动后端：cd backend && uvicorn app.api.main:app --reload</li><li>启动前端：cd frontend && npm run dev</li><li>打开 http://localhost:5173 开始使用！</li></ol></div>';
+    </script>
+</body>
+</html>
