@@ -1,4 +1,4 @@
-// @ts-nocheck
+<!-- eslint-disable -->
 <template>
   <div class="home-container">
     <!-- 背景装饰 -->
@@ -54,7 +54,7 @@
                   <span class="form-label">开始日期</span>
                 </template>
                 <a-date-picker
-                  v-model:value="formData.start_date"
+                  v-model:value="formDates.startDate"
                   style="width: 100%"
                   size="large"
                   class="custom-input"
@@ -68,7 +68,7 @@
                   <span class="form-label">结束日期</span>
                 </template>
                 <a-date-picker
-                  v-model:value="formData.end_date"
+                  v-model:value="formDates.endDate"
                   style="width: 100%"
                   size="large"
                   class="custom-input"
@@ -203,26 +203,28 @@
 import { ref, reactive, computed, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { message } from 'ant-design-vue'
-import type { Dayjs } from 'dayjs'
 import dayjs from 'dayjs'
+import type { Dayjs } from 'dayjs'
 import type { TripFormData as BaseType } from '@/types'
 import { generateTripPlan } from '@/services/api'
 
 const router = useRouter()
 
-interface LocalTripFormData extends BaseType {
-  start_date: Dayjs | null
-  end_date: Dayjs | null
+// 分离的日期表单数据，使用 Dayjs 类型
+interface FormDates {
+  startDate: Dayjs | null
+  endDate: Dayjs | null
 }
 
 const loading = ref(false)
 const loadingProgress = ref(0)
 const loadingStatus = ref('')
 
-const formData = reactive<LocalTripFormData>({
+// 主表单数据 - 完全符合 API 类型要求
+const formData = reactive<BaseType>({
   city: '',
-  start_date: null,
-  end_date: null,
+  start_date: '', // API 要求字符串格式
+  end_date: '',   // API 要求字符串格式
   travel_days: 1,
   transportation: '公共交通',
   accommodation: '经济型酒店',
@@ -230,24 +232,37 @@ const formData = reactive<LocalTripFormData>({
   free_text_input: ''
 })
 
+// 分离的日期状态 - 用于 UI 显示
+const formDates = reactive<FormDates>({
+  startDate: null,
+  endDate: null
+})
+
 const daysCount = computed(() => {
-  if (formData.start_date && formData.end_date) {
-    return formData.end_date.diff(formData.start_date, 'day') + 1
+  if (formDates.startDate && formDates.endDate) {
+    const diff = formDates.endDate.diff(formDates.startDate, 'day') + 1
+    return diff > 0 ? diff : 1
   }
   return 1
 })
 
-watch([() => formData.start_date, () => formData.end_date], ([start, end]) => {
+// 监听日期变化，同步到 API 需要的字符串格式
+watch([() => formDates.startDate, () => formDates.endDate], ([start, end]) => {
   if (start && end) {
     const days = end.diff(start, 'day') + 1
+    
     if (days > 0 && days <= 30) {
       formData.travel_days = days
+      formData.start_date = start.format('YYYY-MM-DD')
+      formData.end_date = end.format('YYYY-MM-DD')
     } else if (days > 30) {
       message.warning('旅行天数不能超过 30 天')
-      formData.end_date = null
+      formDates.endDate = null
+      formData.end_date = ''
     } else {
       message.warning('结束日期不能早于开始日期')
-      formData.end_date = null
+      formDates.endDate = null
+      formData.end_date = ''
     }
   }
 })
@@ -258,7 +273,7 @@ const handleSubmit = async () => {
     return
   }
   
-  if (!formData.start_date || !formData.end_date) {
+  if (!formDates.startDate || !formDates.endDate) {
     message.error('请选择日期')
     return
   }
@@ -276,14 +291,10 @@ const handleSubmit = async () => {
     }, 500)
 
     await generateTripPlan({
-      city: formData.city,
-      start_date: formData.start_date.format('YYYY-MM-DD'),
-      end_date: formData.end_date.format('YYYY-MM-DD'),
-      travel_days: formData.travel_days,
-      transportation: formData.transportation,
-      accommodation: formData.accommodation,
-      preferences: formData.preferences,
-      free_text_input: formData.free_text_input
+      ...formData,
+      start_date: formData.start_date,
+      end_date: formData.end_date,
+      travel_days: formData.travel_days
     })
 
     clearInterval(loadingInterval)
